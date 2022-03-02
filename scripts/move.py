@@ -8,7 +8,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import Pose,Point,Quaternion,PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Trigger,TriggerRequest
-import time
+import time,copy
 import thread
 class random_move:
 
@@ -76,7 +76,7 @@ class random_move:
         for i in range(len(points)):
             self.pose_list.append(Pose(Point(*points[i]),Quaternion(*quas[i])))
 
-        self.temp_pose_list = self.pose_list
+        self.temp_pose_list = copy.copy(self.pose_list)
 
     def kidnap(self,start_time):
         while (time.time() - self.start_time < start_time):
@@ -106,7 +106,7 @@ class random_move:
                 else:
                     rospy.loginfo("move is not success, the state is "+ str(state) +"| total move = %d",self.total_move)
 
-            self.temp_pose_list = self.pose_list
+            self.temp_pose_list = copy.copy(self.pose_list)
 
         rospy.loginfo("|success move/total move: %d / %d|",self.success_move,self.total_move)
 
