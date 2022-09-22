@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(sim_localization)
+project(data_visualization)
 add_compile_options(-std=c++11)
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -13,11 +13,12 @@ roscpp
 rospy
 std_msgs
 nav_msgs
+data_visualization_msg
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(Eigen3 REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -119,7 +120,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 include
-# ${catkin_INCLUDE_DIRS}
+${catkin_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
@@ -136,6 +137,7 @@ include
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/sim_localization_node.cpp)
+# add_executable(kidnap_rescure src/kidnap_rescure.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -151,6 +153,7 @@ include
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+# target_link_libraries(kidnap_rescure ${catkin_LIBRARIES})
 
 #############
 ## Install ##

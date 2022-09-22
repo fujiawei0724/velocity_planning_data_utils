@@ -1,0 +1,47 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/fjw/PioneerTest/catkin_ws/devel/include/**",
+        "/opt/ros/kinetic/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/pioneer_msgs/button_receiver/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/pioneer_msgs/button_vehicle/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/classifiers_lib/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/common/libs/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/data_visualization/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/dataspeed_can/dataspeed_can_msg_filters/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/dataspeed_can/dataspeed_can_msgs/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/dataspeed_can/dataspeed_can_usb/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/pioneer_msgs/ulc_driver/dataspeed_ulc_can/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/dbw_mkz_ros/dbw_mkz_can/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/feature_extractors_lib/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/freespace_planner/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/grid_map/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/motion_planning/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/myframe_visualization_velocity/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/object_builders/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/object_detection/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/observe_planning_ouput/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/path_planning_utilities/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/plan_to_control_interface/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/planning_input/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/roi_filters/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/segmenters/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/start_mission/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/test_web_service/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/to_kappa/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/perception/perception/libs/tracking_lib/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/turn_light_cmd/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/vehicle_center_location/include/**",
+        "/home/fjw/PioneerTest/catkin_ws/src/planning/virtual_obstacle_generator/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
