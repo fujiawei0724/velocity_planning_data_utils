@@ -93,12 +93,12 @@ class StGraphVisualizer:
         corre_ax.set_xlabel('t ($s$)')
 
 if __name__ == "__main__":
-    rospy.init_node("Recorder")
+    rospy.init_node("st_graph_visualization_node")
     st_graph_re = StGraphRecorder()
     rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.st_graph_callback)
 
     plt.ion()
-    fig = plt.figure(0, figsize=(15, 10))
+    fig = plt.figure(0, figsize=(10, 5))
 
 
 
