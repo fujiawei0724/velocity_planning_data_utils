@@ -73,7 +73,7 @@ class StGraphVisualizer:
             # vertex = np.array([vertice_0, vertice_1, vertice_2, vertice_3])
             # v_polygon = Polygon(vertex)
             # corre_ax.plot(*v_polygon.exterior.xy, c='grey')
-            corre_ax.fill_between([cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, cur_parallelogram.vertex[2].t, cur_parallelogram.vertex[1].t], [cur_parallelogram.vertex[0].s, cur_parallelogram.vertex[3].s, cur_parallelogram.vertex[2].s, cur_parallelogram.vertex[1].s], color='grey')
+            corre_ax.fill([cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, cur_parallelogram.vertex[2].t, cur_parallelogram.vertex[1].t], [cur_parallelogram.vertex[0].s, cur_parallelogram.vertex[3].s, cur_parallelogram.vertex[2].s, cur_parallelogram.vertex[1].s], color='grey')
         
         corre_ax.set_ylim(0.0, max_s)
         corre_ax.set_ylabel('s ($m$)')
@@ -91,6 +91,14 @@ class StGraphVisualizer:
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.v, c='r', linewidth=1.5)
         corre_ax.set_ylabel('v ($m/s$)')
         corre_ax.set_xlabel('t ($s$)')
+    
+    @staticmethod
+    def supply_at_fig(st_info, corres_ax):
+        # Draw velocity profile
+        velocity_profile_info = st_info.velocity_profile_info
+        corre_ax.plot(velocity_profile_info.t, velocity_profile_info.a, c='r', linewidth=1.5)
+        corre_ax.set_ylabel('a ($m^{2}/s$)')
+        corre_ax.set_xlabel('t ($s$)')
 
 if __name__ == "__main__":
     rospy.init_node("st_graph_visualization_node")
@@ -98,7 +106,7 @@ if __name__ == "__main__":
     rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.st_graph_callback)
 
     plt.ion()
-    fig = plt.figure(0, figsize=(10, 5))
+    fig = plt.figure(0, figsize=(10, 10))
 
 
 
@@ -131,21 +139,27 @@ if __name__ == "__main__":
             assert False
         
         # Update figure
-        ax_0 = fig.add_subplot(231)
-        ax_1 = fig.add_subplot(232)
-        ax_2 = fig.add_subplot(233)
-        ax_3 = fig.add_subplot(234)
-        ax_4 = fig.add_subplot(235)
-        ax_5 = fig.add_subplot(236)
+        ax_0 = fig.add_subplot(331)
+        ax_1 = fig.add_subplot(332)
+        ax_2 = fig.add_subplot(333)
+        ax_3 = fig.add_subplot(334)
+        ax_4 = fig.add_subplot(335)
+        ax_5 = fig.add_subplot(336)
+        ax_6 = fig.add_subplot(337)
+        ax_7 = fig.add_subplot(338)
+        ax_8 = fig.add_subplot(339)
         if forward_st_graph_info:
             StGraphVisualizer.supply_st_fig(forward_st_graph_info, ax_0, forward_st_graph_last_update_time)
             StGraphVisualizer.supply_vt_fig(forward_st_graph_info, ax_3)
+            StGraphVisualizer.supply_at_fig(forward_st_graph_info, ax_6)
         if change_left_st_graph_info:
             StGraphVisualizer.supply_st_fig(change_left_st_graph_info, ax_1, change_left_st_graph_last_update_time)
             StGraphVisualizer.supply_vt_fig(change_left_st_graph_info, ax_4)
+            StGraphVisualizer.supply_at_fig(change_left_st_graph_info, ax_7)
         if change_right_st_graph_info:
             StGraphVisualizer.supply_st_fig(change_right_st_graph_info, ax_2, change_right_st_graph_last_update_time)
             StGraphVisualizer.supply_vt_fig(change_right_st_graph_info, ax_5)
+            StGraphVisualizer.supply_at_fig(change_right_st_graph_info, ax_8)
 
 
 
