@@ -18,12 +18,32 @@ StGraphInfo = namedtuple('StGraphInfo', ['initial_corridors', 'enhanced_corridor
 class StGraphRecorder:
 
     def __init__(self):
-        self.st_graph_info_ = None
+        self.forward_st_graph_info_ = None
+        self.left_st_graph_info_ = None
+        self.right_st_graph_info_ = None
+        self.forward_last_update_time_ = None
+        self.turn_left_last_update_time_ = None
+        self.turn_right_last_update_time_ = None
     
 
-    def st_graph_callback(self, st_graph_msg):
+    def forward_st_graph_callback(self, st_graph_msg):
         current_st_graph_info = StGraphInfo._make([st_graph_msg.initial_corridors, st_graph_msg.enhanced_corridors, st_graph_msg.occupied_areas, st_graph_msg.velocity_info, st_graph_msg.state_name])
-        self.st_graph_info_ = current_st_graph_info
+        if st_graph_msg.state_name == 'FORWARD':
+            self.forward_st_graph_info_ = current_st_graph_info
+            self.forward_last_update_time_ = time.time()
+    
+    def turn_left_st_graph_callback(self, st_graph_msg):
+        current_st_graph_info = StGraphInfo._make([st_graph_msg.initial_corridors, st_graph_msg.enhanced_corridors, st_graph_msg.occupied_areas, st_graph_msg.velocity_info, st_graph_msg.state_name])
+        if st_graph_msg.state_name == 'TURN_LEFT':
+            self.left_st_graph_info_ = current_st_graph_info
+            self.turn_left_last_update_time_ = time.time()
+
+
+    def turn_right_st_graph_callback(self, st_graph_msg):
+        current_st_graph_info = StGraphInfo._make([st_graph_msg.initial_corridors, st_graph_msg.enhanced_corridors, st_graph_msg.occupied_areas, st_graph_msg.velocity_info, st_graph_msg.state_name])
+        if st_graph_msg.state_name == 'TURN_RIGHT':
+            self.right_st_graph_info_ = current_st_graph_info
+            self.turn_right_last_update_time_ = time.time()
 
 
 class Cube2D:
@@ -93,7 +113,7 @@ class StGraphVisualizer:
         corre_ax.set_xlabel('t ($s$)')
     
     @staticmethod
-    def supply_at_fig(st_info, corres_ax):
+    def supply_at_fig(st_info, corre_ax):
         # Draw velocity profile
         velocity_profile_info = st_info.velocity_profile_info
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.a, c='r', linewidth=1.5)
@@ -103,40 +123,19 @@ class StGraphVisualizer:
 if __name__ == "__main__":
     rospy.init_node("st_graph_visualization_node")
     st_graph_re = StGraphRecorder()
-    rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.st_graph_callback)
+    rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.forward_st_graph_callback)
+    rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.turn_left_st_graph_callback)
+    rospy.Subscriber("/velocity_planning/st_graph_interface", StGraph, st_graph_re.turn_right_st_graph_callback)
+
 
     plt.ion()
     fig = plt.figure(0, figsize=(10, 10))
 
-
-
-    forward_st_graph_info = None
-    change_left_st_graph_info = None
-    change_right_st_graph_info = None
-
-    forward_st_graph_last_update_time = None
-    change_left_st_graph_last_update_time = None
-    change_right_st_graph_last_update_time = None
-
-
     while not rospy.is_shutdown():
         # Wait information
-        while not st_graph_re.st_graph_info_:
+        while not st_graph_re.forward_st_graph_info_ and not st_graph_re.left_st_graph_info_ and not st_graph_re.right_st_graph_info_:
             print('Wait information!!!')
-
-        # Update information
-        current_st_graph_info = st_graph_re.st_graph_info_
-        if current_st_graph_info.current_state_name == "FORWARD":
-            forward_st_graph_info = current_st_graph_info
-            forward_st_graph_last_update_time = time.time()
-        elif current_st_graph_info.current_state_name == "TURN_LEFT":
-            change_left_st_graph_info = current_st_graph_info
-            change_left_st_graph_last_update_time = time.time()
-        elif current_st_graph_info.current_state_name == "TURN_RIGHT":
-            change_right_st_graph_info = current_st_graph_info
-            change_right_st_graph_last_update_time = time.time()
-        else:
-            assert False
+            time.sleep(0.1)
         
         # Update figure
         ax_0 = fig.add_subplot(331)
@@ -148,22 +147,22 @@ if __name__ == "__main__":
         ax_6 = fig.add_subplot(337)
         ax_7 = fig.add_subplot(338)
         ax_8 = fig.add_subplot(339)
-        if forward_st_graph_info:
-            StGraphVisualizer.supply_st_fig(forward_st_graph_info, ax_0, forward_st_graph_last_update_time)
-            StGraphVisualizer.supply_vt_fig(forward_st_graph_info, ax_3)
-            StGraphVisualizer.supply_at_fig(forward_st_graph_info, ax_6)
-        if change_left_st_graph_info:
-            StGraphVisualizer.supply_st_fig(change_left_st_graph_info, ax_1, change_left_st_graph_last_update_time)
-            StGraphVisualizer.supply_vt_fig(change_left_st_graph_info, ax_4)
-            StGraphVisualizer.supply_at_fig(change_left_st_graph_info, ax_7)
-        if change_right_st_graph_info:
-            StGraphVisualizer.supply_st_fig(change_right_st_graph_info, ax_2, change_right_st_graph_last_update_time)
-            StGraphVisualizer.supply_vt_fig(change_right_st_graph_info, ax_5)
-            StGraphVisualizer.supply_at_fig(change_right_st_graph_info, ax_8)
+        if st_graph_re.forward_st_graph_info_:
+            StGraphVisualizer.supply_st_fig(st_graph_re.forward_st_graph_info_, ax_0, st_graph_re.forward_last_update_time_)
+            StGraphVisualizer.supply_vt_fig(st_graph_re.forward_st_graph_info_, ax_3)
+            StGraphVisualizer.supply_at_fig(st_graph_re.forward_st_graph_info_, ax_6)
+        if st_graph_re.left_st_graph_info_:
+            StGraphVisualizer.supply_st_fig(st_graph_re.left_st_graph_info_, ax_1, st_graph_re.turn_left_last_update_time_)
+            StGraphVisualizer.supply_vt_fig(st_graph_re.left_st_graph_info_, ax_4)
+            StGraphVisualizer.supply_at_fig(st_graph_re.left_st_graph_info_, ax_7)
+        if st_graph_re.right_st_graph_info_:
+            StGraphVisualizer.supply_st_fig(st_graph_re.right_st_graph_info_, ax_2, st_graph_re.turn_right_last_update_time_)
+            StGraphVisualizer.supply_vt_fig(st_graph_re.right_st_graph_info_, ax_5)
+            StGraphVisualizer.supply_at_fig(st_graph_re.right_st_graph_info_, ax_8)
 
 
 
-        plt.pause(0.01)
+        plt.pause(0.0001)
         plt.clf()
 
 
