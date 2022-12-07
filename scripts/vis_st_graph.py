@@ -13,6 +13,7 @@ from sensor_msgs.msg import Imu
 from data_visualization_msg.msg import StGraph
 
 StGraphInfo = namedtuple('StGraphInfo', ['initial_corridors', 'enhanced_corridors', 'occupied_areas', 'velocity_profile_info', 'current_state_name'])
+DRAW_DT = 0.2
 
 
 class StGraphRecorder:
@@ -86,6 +87,7 @@ class StGraphVisualizer:
         occupied_areas = st_info.occupied_areas
         for i in range(len(occupied_areas)):
             cur_parallelogram = occupied_areas[i]
+            # # Draw with Polygon
             # vertice_0 = [cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[0].s]
             # vertice_1 = [cur_parallelogram.vertex[1].t, cur_parallelogram.vertex[1].s]
             # vertice_2 = [cur_parallelogram.vertex[2].t, cur_parallelogram.vertex[2].s]
@@ -93,8 +95,24 @@ class StGraphVisualizer:
             # vertex = np.array([vertice_0, vertice_1, vertice_2, vertice_3])
             # v_polygon = Polygon(vertex)
             # corre_ax.plot(*v_polygon.exterior.xy, c='grey')
-            corre_ax.fill([cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, cur_parallelogram.vertex[2].t, cur_parallelogram.vertex[1].t], [cur_parallelogram.vertex[0].s, cur_parallelogram.vertex[3].s, cur_parallelogram.vertex[2].s, cur_parallelogram.vertex[1].s], color='grey')
-        
+
+            # # Draw with matploblib
+            # corre_ax.fill([cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, cur_parallelogram.vertex[2].t, cur_parallelogram.vertex[1].t], [cur_parallelogram.vertex[0].s, cur_parallelogram.vertex[3].s, cur_parallelogram.vertex[2].s, cur_parallelogram.vertex[1].s], color='grey')
+            
+            # Draw with multiple polygons
+            for t_begin in np.arange(cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, DRAW_DT):
+                t_end = min(t_begin + DRAW_DT, cur_parallelogram.vertex[3].t)
+                s_begin = cur_parallelogram.vertex[0].s + (t_begin / (cur_parallelogram.vertex[3].t - cur_parallelogram.vertex[0].t)) * (cur_parallelogram.vertex[3].s - cur_parallelogram.vertex[0].s)
+                s_end = cur_parallelogram.vertex[1].s + (t_begin / (cur_parallelogram.vertex[2].t - cur_parallelogram.vertex[1].t)) * (cur_parallelogram.vertex[2].s - cur_parallelogram.vertex[1].s)
+                corre_ax.fill([t_begin, t_end, t_end, t_begin], [s_begin, s_begin, s_end, s_end], color='grey')
+                vertice_0 = [t_begin, s_begin]
+                vertice_1 = [t_begin, s_end]
+                vertice_2 = [t_end, s_end]
+                vertice_3 = [t_end, s_begin]
+                vertex = np.array([vertice_0, vertice_1, vertice_2, vertice_3])
+                v_polygon = Polygon(vertex)
+                corre_ax.plot(*v_polygon.exterior.xy, c='black')
+
         corre_ax.set_ylim(0.0, max_s)
         corre_ax.set_ylabel('s ($m$)')
         corre_ax.set_xlabel('t ($s$)')
