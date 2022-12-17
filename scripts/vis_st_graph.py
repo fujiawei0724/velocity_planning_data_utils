@@ -102,8 +102,8 @@ class StGraphVisualizer:
             # Draw with multiple polygons
             for t_begin in np.arange(cur_parallelogram.vertex[0].t, cur_parallelogram.vertex[3].t, DRAW_DT):
                 t_end = min(t_begin + DRAW_DT, cur_parallelogram.vertex[3].t)
-                s_begin = cur_parallelogram.vertex[0].s + (t_begin / (cur_parallelogram.vertex[3].t - cur_parallelogram.vertex[0].t)) * (cur_parallelogram.vertex[3].s - cur_parallelogram.vertex[0].s)
-                s_end = cur_parallelogram.vertex[1].s + (t_begin / (cur_parallelogram.vertex[2].t - cur_parallelogram.vertex[1].t)) * (cur_parallelogram.vertex[2].s - cur_parallelogram.vertex[1].s)
+                s_begin = cur_parallelogram.vertex[0].s + ((t_begin - cur_parallelogram.vertex[0].t) / (cur_parallelogram.vertex[3].t - cur_parallelogram.vertex[0].t)) * (cur_parallelogram.vertex[3].s - cur_parallelogram.vertex[0].s)
+                s_end = cur_parallelogram.vertex[1].s + ((t_begin - cur_parallelogram.vertex[0].t) / (cur_parallelogram.vertex[2].t - cur_parallelogram.vertex[1].t)) * (cur_parallelogram.vertex[2].s - cur_parallelogram.vertex[1].s)
                 corre_ax.fill([t_begin, t_end, t_end, t_begin], [s_begin, s_begin, s_end, s_end], color='grey')
                 vertice_0 = [t_begin, s_begin]
                 vertice_1 = [t_begin, s_end]
@@ -114,8 +114,8 @@ class StGraphVisualizer:
                 corre_ax.plot(*v_polygon.exterior.xy, c='black')
 
         corre_ax.set_ylim(0.0, max_s)
-        corre_ax.set_ylabel('s ($m$)')
-        corre_ax.set_xlabel('t ($s$)')
+        corre_ax.set_ylabel('$s$ ($m$)')
+        corre_ax.set_xlabel('$t$ ($s$)')
         if last_update_timestamp:
             corre_ax.set_title('{} \n updated {:.3f} $s$ ago'.format(st_info.current_state_name, time.time() - last_update_timestamp))
         else:
@@ -127,16 +127,16 @@ class StGraphVisualizer:
         # Draw velocity profile
         velocity_profile_info = st_info.velocity_profile_info
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.v, c='r', linewidth=1.5)
-        corre_ax.set_ylabel('v ($m/s$)')
-        corre_ax.set_xlabel('t ($s$)')
+        corre_ax.set_ylabel('$v$ ($m/s$)')
+        corre_ax.set_xlabel('$t$ ($s$)')
     
     @staticmethod
     def supply_at_fig(st_info, corre_ax):
         # Draw velocity profile
         velocity_profile_info = st_info.velocity_profile_info
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.a, c='r', linewidth=1.5)
-        corre_ax.set_ylabel('a ($m^{2}/s$)')
-        corre_ax.set_xlabel('t ($s$)')
+        corre_ax.set_ylabel('$a$ ($m^{2}/s$)')
+        corre_ax.set_xlabel('$t$ ($s$)')
 
 if __name__ == "__main__":
     rospy.init_node("st_graph_visualization_node")
