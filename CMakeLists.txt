@@ -14,6 +14,7 @@ rospy
 std_msgs
 nav_msgs
 data_visualization_msg
+ibeo_lidar_msgs
 )
 
 ## System dependencies are found with CMake's conventions
