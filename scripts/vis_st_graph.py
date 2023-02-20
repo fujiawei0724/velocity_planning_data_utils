@@ -58,7 +58,7 @@ class Cube2D:
 
 class StGraphVisualizer:
     @staticmethod
-    def supply_st_fig(st_info, corre_ax, last_update_timestamp=None):
+    def supply_st_fig(st_info, corre_ax, last_update_timestamp=None, need_ylabel=False):
         # Construct and draw initial cubes
         max_s = 50.0
         ini_corridors = st_info.initial_corridors
@@ -114,7 +114,8 @@ class StGraphVisualizer:
                 corre_ax.plot(*v_polygon.exterior.xy, c='black')
 
         corre_ax.set_ylim(0.0, max_s)
-        corre_ax.set_ylabel('$s$ ($m$)')
+        if need_ylabel:
+            corre_ax.set_ylabel('$s$ ($m$)')
         corre_ax.set_xlabel('$t$ ($s$)')
         if last_update_timestamp:
             corre_ax.set_title('{} \n updated {:.3f} $s$ ago'.format(st_info.current_state_name, time.time() - last_update_timestamp))
@@ -123,19 +124,21 @@ class StGraphVisualizer:
 
     
     @staticmethod
-    def supply_vt_fig(st_info, corre_ax):
+    def supply_vt_fig(st_info, corre_ax, need_ylabel=False):
         # Draw velocity profile
         velocity_profile_info = st_info.velocity_profile_info
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.v, c='r', linewidth=1.5)
-        corre_ax.set_ylabel('$v$ ($m/s$)')
+        if need_ylabel:
+            corre_ax.set_ylabel('$v$ ($m/s$)')
         corre_ax.set_xlabel('$t$ ($s$)')
     
     @staticmethod
-    def supply_at_fig(st_info, corre_ax):
+    def supply_at_fig(st_info, corre_ax, need_ylabel=False):
         # Draw velocity profile
         velocity_profile_info = st_info.velocity_profile_info
         corre_ax.plot(velocity_profile_info.t, velocity_profile_info.a, c='r', linewidth=1.5)
-        corre_ax.set_ylabel('$a$ ($m^{2}/s$)')
+        if need_ylabel:
+            corre_ax.set_ylabel('$a$ ($m^{2}/s$)')
         corre_ax.set_xlabel('$t$ ($s$)')
 
 if __name__ == "__main__":
@@ -166,9 +169,9 @@ if __name__ == "__main__":
         ax_7 = fig.add_subplot(338)
         ax_8 = fig.add_subplot(339)
         if st_graph_re.forward_st_graph_info_:
-            StGraphVisualizer.supply_st_fig(st_graph_re.forward_st_graph_info_, ax_0, st_graph_re.forward_last_update_time_)
-            StGraphVisualizer.supply_vt_fig(st_graph_re.forward_st_graph_info_, ax_3)
-            StGraphVisualizer.supply_at_fig(st_graph_re.forward_st_graph_info_, ax_6)
+            StGraphVisualizer.supply_st_fig(st_graph_re.forward_st_graph_info_, ax_0, st_graph_re.forward_last_update_time_, need_ylabel=True)
+            StGraphVisualizer.supply_vt_fig(st_graph_re.forward_st_graph_info_, ax_3, need_ylabel=True)
+            StGraphVisualizer.supply_at_fig(st_graph_re.forward_st_graph_info_, ax_6, need_ylabel=True)
         if st_graph_re.left_st_graph_info_:
             StGraphVisualizer.supply_st_fig(st_graph_re.left_st_graph_info_, ax_1, st_graph_re.turn_left_last_update_time_)
             StGraphVisualizer.supply_vt_fig(st_graph_re.left_st_graph_info_, ax_4)
